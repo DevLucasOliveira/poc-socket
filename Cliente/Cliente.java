@@ -6,10 +6,14 @@ public class Cliente {
 
     public static void main(String[] args) {
         Socket socketClient = null;
-        final int PORTA = 9876;
-        final String IPADDRES = "127.0.0.1";
-        PrintStream saida = null;
         Scanner teclado = null;
+        Scanner entrada = null;
+        PrintStream saida = null;
+        String msg = null;
+
+        final String IPADDRES = "127.0.0.1";
+        final int PORTA = 9876;
+
 
         // Solicitar uma conexão com o servidor
         try {
@@ -24,8 +28,11 @@ public class Cliente {
 
         // Comunicação
         try {
-            String msg = teclado.nextLine();
-            saida.println(msg);
+            do {
+                System.out.print("Digite uma mensagem: ");
+                msg = teclado.nextLine();
+                saida.println(msg);
+            } while(!msg.equals("exit") && !msg.equals("fechar"));
         } catch (Exception e) {
             System.out.println("Erro na etapa de comunicação");
         }

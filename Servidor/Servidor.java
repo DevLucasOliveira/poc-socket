@@ -1,3 +1,4 @@
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -6,11 +7,15 @@ public class Servidor {
 
     public static void main(String[] args) {
         ServerSocket socketServer = null;
-        final int PORTA = 9876;
         Socket socketClient = null;
-        Scanner entrada;
+        Scanner entrada = null;
+        PrintStream saida = null;
+        String msg = null;
+
+        final int PORTA = 9876;
 
         // Bind - solicitar uma porta ao SO
+
         try {
             socketServer = new ServerSocket(PORTA);
         } catch (Exception e) {
@@ -19,24 +24,30 @@ public class Servidor {
         }
 
         // Aguardar um pedido de conexão -listen/accept
-        try {
-            System.out.println("Aguardando uma conexão . . .");
-            socketClient = socketServer.accept();
-            System.out.println("Conectado com " + socketClient.getInetAddress().getHostAddress());
+        do {
 
-            entrada = new Scanner(socketClient.getInputStream());
-        } catch (Exception e) {
-            System.out.println("Erro no processo de conexão");
-            return;
-        }
+            try {
+                System.out.println("Aguardando uma conexão . . .");
+                socketClient = socketServer.accept();
+                System.out.println("Conectado com " + socketClient.getInetAddress().getHostAddress());
 
-        // Comunicação
-        try {
-            String msg = entrada.nextLine();
-            System.out.println("Recebido: "+msg);            
-        } catch (Exception e) {
-            System.out.println("Erro durante a comunicação com o cliente.");
-        }
+                entrada = new Scanner(socketClient.getInputStream());
+            } catch (Exception e) {
+                System.out.println("Erro no processo de conexão");
+                return;
+            }
+
+            // Comunicação
+            try {
+                do {
+                    msg = entrada.nextLine();
+                    System.out.println("Usuário: " + msg);
+                } while (!msg.equals("exit") && !msg.equals("fechar"));
+            } catch (Exception e) {
+                System.out.println("Erro durante a comunicação com o cliente.");
+            }
+
+        } while (!msg.equals("fechar"));
 
         // Encerrar a coneão
         try {
@@ -48,4 +59,5 @@ public class Servidor {
         }
 
     }
+
 }
